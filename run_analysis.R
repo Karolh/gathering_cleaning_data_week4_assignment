@@ -13,7 +13,13 @@ runAnalysis <- function(){
     testData <- readData("data", "test")
     
     ## Finally merge both datasets together
-    rbind(train_data, test_data)
+    ## 1. Merges the training and the test sets to create one data set.
+    data <- rbind(train_data, test_data)
+    
+    ## 2. Extracts only the measurements on the mean and standard deviation for each measurement.
+    ## Extracting measurements on the mean and standard deviation 
+    data <- select(data, subject, activity, partition, contains("std()"), contains("mean()"))
+    data
 }
 
 downloadData <- function() {
@@ -38,6 +44,7 @@ readYData <- function(directory, partition) {
     activity_file <- paste(directory, "/", "activity_labels.txt", sep = "")
     act_lab <- read.table(activity_file, stringsAsFactors = FALSE, header = FALSE)
     
+    ## 3. Uses descriptive activity names to name the activities in the data set
     ## Important not to sort here as merge seems to automatically sort which would 
     ## really mess up any merging
     y_train <- merge(y_train, act_lab, by.x = "V1", by.y = "V1", sort = FALSE)
