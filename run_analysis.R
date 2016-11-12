@@ -6,11 +6,11 @@
 
 
 runAnalysis <- function(){
-    if (!file.exists("data/dataset.zip")){
-        downloadData();
-    }
-    trainData <- readData("data", "train");
-    testData <- readData("data", "test")
+    
+    downloadData()
+    directory <- "data/UCI HAR Dataset"
+    trainData <- readData(directory, "train")
+    testData <- readData(directory, "test")
     
     ## Finally merge both datasets together
     ## 1. Merges the training and the test sets to create one data set.
@@ -22,9 +22,22 @@ runAnalysis <- function(){
     data
 }
 
+## Data is downloaded to a data directory
+## If the data directory doesn't exist then it creates it
+## This function then downloads the data to a zip file - dataset.zip
+## Which is unziped in the data directory
 downloadData <- function() {
-    download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip", 
-                  destfile = "data/dataset.zip", method = "curl")
+    if(!dir.exists("data")){
+        dir.create("data")
+    }
+    
+    if (!file.exists("data/dataset.zip")){
+        download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip", 
+                      destfile = "data/dataset.zip", method = "curl")
+        unzip("data/dataset.zip", exdir = "data")
+    }
+    
+    
 }
 
 readData <- function(directory, partition) {
