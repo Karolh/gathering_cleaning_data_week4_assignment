@@ -18,18 +18,17 @@ downloadData <- function() {
                   destfile = "data/dataset.zip", method = "curl")
 }
 
-readData <- function(directory, data) {
+readData <- function(directory, partition) {
 
-    x_data <- readXData(directory, data);
-    y_data <- readYData(directory, data);
+    x_data <- readXData(directory, partition);
+    y_data <- readYData(directory, partition);
     merged_data <- cbind(x_data, y_data) ## That's the training data merged
-    merged_data
 
     
 }
 
-readYData <- function(directory, data) {
-    y_data_file <-  paste(directory, "/", data, "/", "y_", data, ".txt", sep = "")
+readYData <- function(directory, partition) {
+    y_data_file <-  paste(directory, "/", partition, "/", "y_", partition, ".txt", sep = "")
     y_train <- read.table(y_data_file, stringsAsFactors = FALSE, header = FALSE)
     
     activity_file <- paste(directory, "/", "activity_labels.txt", sep = "")
@@ -46,8 +45,8 @@ readYData <- function(directory, data) {
     
 }
 
-readXData <- function(directory, data) {
-    x_data_file <-  paste(directory, "/", data, "/", "X_", data, ".txt", sep = "")
+readXData <- function(directory, partition) {
+    x_data_file <-  paste(directory, "/", partition, "/", "X_", partition, ".txt", sep = "")
     x_train <- read.table(x_data_file, stringsAsFactors = FALSE, header = FALSE)
     
     ## Load the features to get the column names for the x_train data.
@@ -55,7 +54,7 @@ readXData <- function(directory, data) {
     ## Apply the column names
     colnames(x_train) <- features$V2
     
-    subject_file <- paste(directory, "/", data, "/", "subject_", data, ".txt", sep = "")
+    subject_file <- paste(directory, "/", partition, "/", "subject_", partition, ".txt", sep = "")
     subject_train <- read.table(subject_file, stringsAsFactors = FALSE, header = FALSE)
     
     ## Merge x_train data with subjects
