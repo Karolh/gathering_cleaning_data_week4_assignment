@@ -7,19 +7,42 @@
 download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip", 
               destfile = "data/dataset.zip", method = "curl")
 
-## Read acceleration data x
-acc_x_train <- read.table("data/train/Inertial Signals/body_acc_x_train.txt", stringsAsFactors = FALSE, header = FALSE)
-acc_y_train <- read.table("data/train/Inertial Signals/body_acc_y_train.txt", stringsAsFactors = FALSE, header = FALSE)
-acc_z_train <- read.table("data/train/Inertial Signals/body_acc_z_train.txt", stringsAsFactors = FALSE, header = FALSE)
-
-## get the subject data - 
+## Staring over - only need trained data & not Inertial Signal data
+x_train <- read.table("data/train/X_train.txt", stringsAsFactors = FALSE, header = FALSE)
+y_train <- read.table("data/train/y_train.txt", stringsAsFactors = FALSE, header = FALSE)
 subject_train <- read.table("data/train/subject_train.txt", stringsAsFactors = FALSE, header = FALSE)
+act_lab <- read.table("data/activity_labels.txt", stringsAsFactors = FALSE, header = FALSE)
 
-merged_x_sub <- merge(subject_train, acc_x_train, by.x = 0, by.y = 0, sort = FALSE)
-merged_y_sub <- merge(subject_train, acc_y_train, by.x = 0, by.y = 0, sort = FALSE)
-merged_z_sub <- merge(subject_train, acc_z_train, by.x = 0, by.y = 0, sort = FALSE)
+## Important not to sort here as merge seems to automatically sort which would 
+## really mess up any merging
+y_train <- merge(y_train, act_lab, by.x = "V1", by.y = "V1", sort = FALSE)
+## Name the columns
+colnames(y_train) <- c("class", "activity")
 
-merged_x_sub <- merged_x_sub %>% mutate(axis = 'x')
-merged_y_sub <- merged_y_sub %>% mutate(axis = 'y')
-merged_z_sub <- merged_z_sub %>% mutate(axis = 'z')
+## Load the features to get the column names for the x_train data.
+features <- read.table("data/features.txt", stringsAsFactors = FALSE, header = FALSE)
+## Apply the column names
+colnames(x_train) <- features$V2
+
+## Merge x_train data with subjects
+## merging by row index
+## This will add 2 new columns - Row.names 
+x_tr_sub <- merge(subject_train, x_train, by.x = 0, by.y = 0, sort = FALSE)
+y_tr_sub <- merge(subject_train, y_train, by.x = 0, by.y = 0, sort = FALSE)
+
+
+## Rename V1 row to subject
+colnames(y_tr_sub)[colnames(y_tr_sub) == "V1"] <- "subject"
+colnames(x_tr_sub)[colnames(x_tr_sub) == "V1"] <- "subject"
+
+## This will speed things up for the merging
+x_tr_sub <- tbl_df(x_tr_sub)
+y_tr_sub <- tbl_df(y_tr_sub)
+
+## Removing the Row.names column from the x_tr_sub datasets 
+x_tr_sub <- select(x_tr_sub, 2:length(names(x_tr_sub)))
+## Only need the subject and activity columns
+y_tr_sub <- select(y_tr_sub,  activity)
+## x_y_tr_merged <- merge(x_tr_sub, y_tr_sub, by.x = "subject", by.y = "subject", sort = FALSE)
+x_y_tr_merged <- cbind(x_tr_sub, y_tr_sub) ## That's the training data merged
 
