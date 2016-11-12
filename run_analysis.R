@@ -40,6 +40,7 @@ downloadData <- function() {
     
 }
 
+## This reads the X and Y data merges them and then adds a partition column
 readData <- function(directory, partition) {
 
     x_data <- readXData(directory, partition);
@@ -50,9 +51,11 @@ readData <- function(directory, partition) {
     
 }
 
+## Reads the Y data, applies labels to it
+## Returns the Y table with just the activity labels
 readYData <- function(directory, partition) {
     y_data_file <-  paste(directory, "/", partition, "/", "y_", partition, ".txt", sep = "")
-    y_train <- read.table(y_data_file, stringsAsFactors = FALSE, header = FALSE)
+    y_data <- read.table(y_data_file, stringsAsFactors = FALSE, header = FALSE)
     
     activity_file <- paste(directory, "/", "activity_labels.txt", sep = "")
     act_lab <- read.table(activity_file, stringsAsFactors = FALSE, header = FALSE)
@@ -60,39 +63,43 @@ readYData <- function(directory, partition) {
     ## 3. Uses descriptive activity names to name the activities in the data set
     ## Important not to sort here as merge seems to automatically sort which would 
     ## really mess up any merging
-    y_train <- merge(y_train, act_lab, by.x = "V1", by.y = "V1", sort = FALSE)
-    colnames(y_train) <- c("class", "activity")
+    y_data <- merge(y_data, act_lab, by.x = "V1", by.y = "V1", sort = FALSE)
+    colnames(y_data) <- c("class", "activity")
     
     ## Only need the activity columns
-    y_train <- select(y_train,  activity)
-    y_train
+    y_data <- select(y_data,  activity)
+    y_data
     
 }
 
+## This gets the x data.
+## Applies column names to it from the features file
+## Applies the subject colum - to identify the subjects with their data
+## Cleans the data up a bit
 readXData <- function(directory, partition) {
     x_data_file <-  paste(directory, "/", partition, "/", "X_", partition, ".txt", sep = "")
-    x_train <- read.table(x_data_file, stringsAsFactors = FALSE, header = FALSE)
+    x_data <- read.table(x_data_file, stringsAsFactors = FALSE, header = FALSE)
     
     ## Load the features to get the column names for the x_data data.
     features_file <-  paste(directory, "/", "features.txt", sep = "")
     features <- read.table(features_file, stringsAsFactors = FALSE, header = FALSE)
     ## Apply the column names
-    colnames(x_train) <- features$V2
+    colnames(x_data) <- features$V2
     
     subject_file <- paste(directory, "/", partition, "/", "subject_", partition, ".txt", sep = "")
-    subject_train <- read.table(subject_file, stringsAsFactors = FALSE, header = FALSE)
+    subject <- read.table(subject_file, stringsAsFactors = FALSE, header = FALSE)
     
-    ## Merge x_train data with subjects
+    ## Merge x_data data with subjects
     ## merging by row index
     ## This will add 2 new columns - Row.names 
-    x_tr_sub <- merge(subject_train, x_train, by.x = 0, by.y = 0, sort = FALSE)
+    x_data <- merge(subject, x_data, by.x = 0, by.y = 0, sort = FALSE)
     
     ## Rename V1 row to subject
-    colnames(x_tr_sub)[colnames(x_tr_sub) == "V1"] <- "subject"
+    colnames(x_data)[colnames(x_data) == "V1"] <- "subject"
     
-    ## Removing the Row.names column from the x_tr_sub datasets 
-    x_tr_sub <- select(x_tr_sub, 2:length(names(x_tr_sub)))
-    x_tr_sub
+    ## Removing the Row.names column from the x_data datasets 
+    x_data <- select(x_data, 2:length(names(x_data)))
+    x_data
 }
 
 
