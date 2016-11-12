@@ -73,8 +73,9 @@ readXData <- function(directory, partition) {
     x_data_file <-  paste(directory, "/", partition, "/", "X_", partition, ".txt", sep = "")
     x_train <- read.table(x_data_file, stringsAsFactors = FALSE, header = FALSE)
     
-    ## Load the features to get the column names for the x_train data.
-    features <- read.table("data/features.txt", stringsAsFactors = FALSE, header = FALSE)
+    ## Load the features to get the column names for the x_data data.
+    features_file <-  paste(directory, "/", "features.txt", sep = "")
+    features <- read.table(features_file, stringsAsFactors = FALSE, header = FALSE)
     ## Apply the column names
     colnames(x_train) <- features$V2
     
