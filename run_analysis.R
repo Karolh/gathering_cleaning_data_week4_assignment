@@ -23,6 +23,7 @@ readData <- function(directory, partition) {
     x_data <- readXData(directory, partition);
     y_data <- readYData(directory, partition);
     merged_data <- cbind(x_data, y_data) ## That's the training data merged
+    mutate(merged_data, partition = partition)
 
     
 }
