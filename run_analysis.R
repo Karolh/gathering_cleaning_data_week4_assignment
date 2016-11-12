@@ -11,6 +11,9 @@ runAnalysis <- function(){
     }
     trainData <- readData("data", "train");
     testData <- readData("data", "test")
+    
+    ## Finally merge both datasets together
+    rbind(train_data, test_data)
 }
 
 downloadData <- function() {
