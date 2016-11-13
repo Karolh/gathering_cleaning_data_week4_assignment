@@ -5,9 +5,10 @@
 ## 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 library("dplyr")
 
-## This function performs the merging and the summarising of the UCI HAR Data
+## This function performs the downloading, merging and summarising of the UCI HAR Data
 ## The summarised data is output to the output directory
 runAnalysis <- function() {
+    downloadData()
     summariseData(mergeData())
 }
 
@@ -20,10 +21,14 @@ readSummarisedData <- function() {
     read.csv("output/summarised_data.csv", stringsAsFactors = FALSE)
 }
 
+## Performs the merging of the data.
+## Reads in the train data and the test data and them combines both
 mergeData <- function() {
-    
-    downloadData()
     directory <- "data/UCI HAR Dataset"
+    if (!dir.exists(directory)) {
+        stop("The data/UCI HAR Dataset directory does not exist.  Download the data using downloadData()")
+    }
+    
     trainData <- readData(directory, "train")
     testData <- readData(directory, "test")
     
