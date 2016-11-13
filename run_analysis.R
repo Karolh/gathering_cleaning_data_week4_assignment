@@ -11,6 +11,15 @@ runAnalysis <- function() {
     summariseData(mergeData())
 }
 
+## The reads in the summarised data
+## Returns a data.frame
+readSummarisedData <- function() {
+    if (!dir.exists("output") || !file.exists("output/summarised_data.csv")){
+        stop("Summarised data file does not exist. Perform runAnalysis() first.")
+    }
+    read.csv("output/summarised_data.csv", stringsAsFactors = FALSE)
+}
+
 mergeData <- function() {
     
     downloadData()
@@ -41,7 +50,7 @@ summariseData <- function(data) {
     }
     summarized_data <- arrange(aggregate(data[, 4:length(names(data))], list(subject = 
                 data$subject, activity = data$activity), mean), subject)
-    output_file = paste(output_dir, "/", "summarized_data.csv", sep = "")
+    output_file = paste(output_dir, "/", "summarised_data.csv", sep = "")
     write.csv(summarized_data, file = output_file, row.names = FALSE)
     
 } 
@@ -60,7 +69,6 @@ downloadData <- function() {
                       destfile = "data/dataset.zip", method = "curl")
         unzip("data/dataset.zip", exdir = "data")
     }
-    
     
 }
 
