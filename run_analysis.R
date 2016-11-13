@@ -5,7 +5,7 @@
 ## 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 
 
-runAnalysis <- function(){
+runAnalysis <- function() {
     
     downloadData()
     directory <- "data/UCI HAR Dataset"
@@ -18,9 +18,19 @@ runAnalysis <- function(){
     
     ## 2. Extracts only the measurements on the mean and standard deviation for each measurement.
     ## Extracting measurements on the mean and standard deviation 
-    data <- select(data, subject, activity, partition, contains("std()"), contains("mean()"))
+    data <- select(data, subject, activity, partition, contains("std()"), 
+                   contains("mean()"))
     data
 }
+
+## Summarize data
+## Expecting the data from runAnalysis
+summariseData <- function(data) {
+    summarized_data <- arrange(aggregate(data[, 4:length(names(data))], list(subject = 
+                data$subject, activity = data$activity), mean), subject)
+    write.csv(summarized_data, file = "summarised_data.csv", row.names = FALSE)
+    
+} 
 
 ## Data is downloaded to a data directory
 ## If the data directory doesn't exist then it creates it
