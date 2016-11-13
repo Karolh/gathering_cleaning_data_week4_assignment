@@ -42,12 +42,12 @@ This will return a data frame of the data in the csv file.
 ### Merging the Data
 
 The function `mergeData()`:
-# downloads and unzips the data in the directory `data`.  If this directory does not exist it will create it.
-# Then it pulls in the data
-# Cleans it
-# Merges X and y data first for both train and test data.
-# Then merges the train and test data
-# Finally just extracting columns that have either "mean()" or "std()"
+* downloads and unzips the data in the directory `data`.  If this directory does not exist it will create it.
+* Then it pulls in the data
+* Cleans it
+* Merges X and y data first for both train and test data.
+* Then merges the train and test data
+* Finally just extracting columns that have either "mean()" or "std()"
 
 ### Summarising the Data
 
