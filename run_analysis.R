@@ -15,10 +15,10 @@ runAnalysis <- function() {
 ## The reads in the summarised data
 ## Returns a data.frame
 readSummarisedData <- function() {
-    if (!dir.exists("output") || !file.exists("output/summarised_data.csv")){
+    if (!dir.exists("output") || !file.exists("output/summarised_data.txt")){
         stop("Summarised data file does not exist. Perform runAnalysis() first.")
     }
-    read.csv("output/summarised_data.csv", stringsAsFactors = FALSE)
+    read.table("output/summarised_data.txt", header = TRUE, stringsAsFactors = FALSE)
 }
 
 ## Performs the merging of the data.
@@ -55,8 +55,8 @@ summariseData <- function(data) {
     }
     summarized_data <- arrange(aggregate(data[, 4:length(names(data))], list(subject = 
                 data$subject, activity = data$activity), mean), subject)
-    output_file = paste(output_dir, "/", "summarised_data.csv", sep = "")
-    write.csv(summarized_data, file = output_file, row.names = FALSE)
+    output_file = paste(output_dir, "/", "summarised_data.txt", sep = "")
+    write.table(summarized_data, file = output_file, row.names = FALSE)
     
 } 
 
